@@ -46,10 +46,17 @@ class AdaptiveInstanceNorm2d(nn.Module):
         self.eps = eps
     
     def IN_noWeight(self, x):
-        x = x - torch.mean(x, dim = (2, 3), keepdim = True)
-        tmp = torch.mul(x, x)
-        tmp = torch.rsqrt(torch.mean(tmp, dim = (2, 3), keepdim = True) + self.eps)
-        return x * tmp
+        # feature map level whiten
+        N, C = x.size(0), x.size(1)
+        # mean (and meaned x)
+        mean = x.contiguous().view(N, C, -1).mean(2).contiguous().view(N, C, 1, 1)
+        x = x - mean                                                        # (x - mean): N * C * H * W
+        # variance
+        var = torch.mul(x, x)                                               # (x - mean) ^ 2: N * C * H * W
+        var = var.contiguous().view(N, C, -1).mean(2).contiguous().view(N, C, 1, 1)
+        var = torch.rsqrt(var + self.eps)                                   # (H * W) / sqrt((x - mean) ^ 2): N * C * 1 * 1
+        x = x * var                                                         # normalized x: N * C * H * W
+        return x
     
     def Apply_style(self, content, style):
         style = style.contiguous().view([-1, 2, content.size(1), 1, 1])     # N * 2 * C * 1 * 1
@@ -63,3 +70,4 @@ class AdaptiveInstanceNorm2d(nn.Module):
         normalized_content = self.IN_noWeight(content)
         stylized_content = self.Apply_style(normalized_content, style)
         return stylized_content
+    
