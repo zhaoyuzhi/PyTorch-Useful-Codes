@@ -232,7 +232,7 @@ def SaliencyNet(pretrained = False, **kwargs):
 # 4. The corresponding saliency maps have the same names of RGB images
 if __name__ == '__main__':
 
-    gan = SaliencyNet(pretrained = True)
+    gan = SaliencyNet(pretrained = True).cuda()
 
     # This is an example, you should change it with your own path
     root_dir = 'D:\\dataset\\ILSVRC2012_train_256\\'
@@ -242,14 +242,20 @@ if __name__ == '__main__':
         os.makedirs(result_dir)
     images = os.listdir(root_dir)
     
+    count = 1
+    
     for image_path in images:
         image = cv2.imread(os.path.join(root_dir, image_path), cv2.IMREAD_COLOR)
         size = image.shape[:2]
 
         X = image_preprocess(image)
-        X = torch.autograd.Variable(X.unsqueeze(0))
+        X = torch.autograd.Variable(X.unsqueeze(0)).cuda()
 
         result = gan(X)
+        result = result.detach().cpu()
     
         saliency_map = post_process(result.data.numpy()[0, 0], size[0], size[1])
         cv2.imwrite(os.path.join(result_dir, image_path), saliency_map)
+        
+        print(count)
+        count = count + 1
