@@ -78,9 +78,9 @@ def Dset_Acuuracy(imglist, refpath, basepath):
     # Compute the accuracy
     for i in range(len(imglist)):
         # Full imgpath
-        imgname = imglist[i]
-        refimgpath = refpath + imgname + '.JPEG'
-        imgpath = basepath + imgname + '.JPEG'
+        imgname = imglist[i] + '.JPEG'
+        refimgpath = os.path.join(refpath, imgname)
+        imgpath = os.path.join(basepath, imgname)
         # Compute the traditional indexes
         nrmse = NRMSE(refimgpath, imgpath)
         psnr = PSNR(refimgpath, imgpath)
@@ -103,9 +103,9 @@ if __name__ == "__main__":
     # Read all names
     imglist = text_readlines('./ILSVRC2012_10k_name.txt')
     # Define reference path
-    refpath = 'C:\\Users\\ZHAO Yuzhi\\Desktop\\dataset\\ILSVRC2012_val_256\\'
+    refpath = 'C:\\Users\\ZHAO Yuzhi\\Desktop\\dataset\\ILSVRC2012_val_256'
     # Define imgpath
-    basepath = 'C:\\Users\\ZHAO Yuzhi\\Desktop\\dataset\\colorization_results\\ILSVRC2012_sample10_noPer\\'
+    basepath = 'C:\\Users\\ZHAO Yuzhi\\Desktop\\dataset\\colorization_results\\ILSVRC2012_sample10_noPer'
     
     nrmselist, psnrlist, ssimlist, nrmseratio, psnrratio, ssimratio = Dset_Acuuracy(imglist, refpath, basepath)
 

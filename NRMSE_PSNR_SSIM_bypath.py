@@ -42,12 +42,20 @@ def SSIM(srcpath, dstpath, RGBinput = True, scale = 256):
     ssim = measure.compare_ssim(scr, dst, multichannel = RGBinput)
     return ssim
 
+def get_files(path):
+    # read a folder, return the complete path
+    ret = []
+    for root, dirs, files in os.walk(path):
+        for filespath in files:
+            ret.append(os.path.join(root, filespath))
+    return ret
+
 def get_jpgs(path):
     # read a folder, return the image name
-    ret = [] 
-    for root, dirs, files in os.walk(path):  
-        for filespath in files: 
-            ret.append(filespath) 
+    ret = []
+    for root, dirs, files in os.walk(path):
+        for filespath in files:
+            ret.append(filespath)
     return ret
     
 # read a txt expect EOF
@@ -74,7 +82,7 @@ def text_save(content, filename, mode = 'a'):
     file.close()
 
 # Traditional indexes accuracy for dataset
-def Dset_Acuuracy(imglist, refpath, basepath):
+def Dset_Acuuracy(refpath_imglist, basepath_imglist):
     # Define the list saving the accuracy
     nrmselist = []
     psnrlist = []
@@ -84,11 +92,10 @@ def Dset_Acuuracy(imglist, refpath, basepath):
     ssimratio = 0
 
     # Compute the accuracy
-    for i in range(len(imglist)):
+    for i in range(len(refpath_imglist)):
         # Full imgpath
-        imgname = imglist[i]
-        refimgpath = refpath + imgname
-        imgpath = basepath + imgname
+        refimgpath = refpath_imglist[i]
+        imgpath = basepath_imglist[i]
         # Compute the traditional indexes
         nrmse = NRMSE(refimgpath, imgpath)
         psnr = PSNR(refimgpath, imgpath)
@@ -100,22 +107,23 @@ def Dset_Acuuracy(imglist, refpath, basepath):
         psnrratio = psnrratio + psnr
         ssimratio = ssimratio + ssim
         print('The %dth image: nrmse: %f, psnr: %f, ssim: %f' % (i, nrmse, psnr, ssim))
-    nrmseratio = nrmseratio / len(imglist)
-    psnrratio = psnrratio / len(imglist)
-    ssimratio = ssimratio / len(imglist)
+    nrmseratio = nrmseratio / len(refimgpath)
+    psnrratio = psnrratio / len(refimgpath)
+    ssimratio = ssimratio / len(refimgpath)
 
     return nrmselist, psnrlist, ssimlist, nrmseratio, psnrratio, ssimratio
     
 if __name__ == "__main__":
     
     # Define reference path
-    refpath = 'C:\\Users\\ZHAO Yuzhi\\Desktop\\dataset\\ILSVRC2012_val_256\\'
+    refpath = 'D:\\dataset\\Video\\test\\input\\DAVIS'
     # Define imgpath
-    basepath = 'C:\\Users\\ZHAO Yuzhi\\Desktop\\dataset\\colorization_results\\ILSVRC2012_sample10_noPer\\'
+    basepath = 'D:\\dataset\\Video\\test\\ECCV18_release\\colorization\\ECCV16\\DAVIS-gray'
     # Read all names
-    imglist = get_jpgs(refpath)
+    refpath_imglist = get_files(refpath)
+    basepath_imglist = get_files(basepath)
     
-    nrmselist, psnrlist, ssimlist, nrmseratio, psnrratio, ssimratio = Dset_Acuuracy(imglist, refpath, basepath)
+    nrmselist, psnrlist, ssimlist, nrmseratio, psnrratio, ssimratio = Dset_Acuuracy(refpath_imglist, basepath_imglist)
 
     print('The overall results: nrmse: %f, psnr: %f, ssim: %f' % (nrmseratio, psnrratio, ssimratio))
 
