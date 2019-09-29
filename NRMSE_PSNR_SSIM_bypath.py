@@ -107,9 +107,9 @@ def Dset_Acuuracy(refpath_imglist, basepath_imglist):
         psnrratio = psnrratio + psnr
         ssimratio = ssimratio + ssim
         print('The %dth image: nrmse: %f, psnr: %f, ssim: %f' % (i, nrmse, psnr, ssim))
-    nrmseratio = nrmseratio / len(refimgpath)
-    psnrratio = psnrratio / len(refimgpath)
-    ssimratio = ssimratio / len(refimgpath)
+    nrmseratio = nrmseratio / len(refpath_imglist)
+    psnrratio = psnrratio / len(refpath_imglist)
+    ssimratio = ssimratio / len(refpath_imglist)
 
     return nrmselist, psnrlist, ssimlist, nrmseratio, psnrratio, ssimratio
     
