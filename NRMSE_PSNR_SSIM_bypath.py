@@ -46,7 +46,7 @@ def PSNR(srcpath, dstpath, gray2rgb = False, scale = 256):
     return psnr
 
 # Compute the mean structural similarity index between two images
-def SSIM(srcpath, dstpath, RGBinput = True, gray2rgb = False, scale = 256):
+def SSIM(srcpath, dstpath, gray2rgb = False, scale = 256, RGBinput = True):
     scr = io.imread(srcpath)
     dst = io.imread(dstpath)
     if gray2rgb:
@@ -138,9 +138,9 @@ if __name__ == "__main__":
     # Create argument parser
     parser = argparse.ArgumentParser()
     parser.add_argument('--refpath', type = str, default = 'D:\\dataset\\Video\\test\\input_2dataset\\DAVIS', help = 'define reference path')
-    parser.add_argument('--basepath', type = str, default = 'D:\\dataset\\Video\\test\\input\\DAVIS-gray', help = 'define imgpath')
-    parser.add_argument('--gray2rgb', type = bool, default = True, help = 'whether there is an input is grayscale')
-    parser.add_argument('--scale', type = int, default = 256, help = 'whether the input needs resize')
+    parser.add_argument('--basepath', type = str, default = 'D:\\dataset\\Video\\test\\ECCV18_release\\colorization\\ECCV16\\DAVIS-gray', help = 'define imgpath')
+    parser.add_argument('--gray2rgb', type = bool, default = False, help = 'whether there is an input is grayscale')
+    parser.add_argument('--scale', type = int, default = 0, help = 'whether the input needs resize')
     parser.add_argument('--savelist', type = bool, default = False, help = 'whether the results should be saved')
     opt = parser.parse_args()
     print(opt)
