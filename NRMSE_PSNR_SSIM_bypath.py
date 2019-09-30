@@ -8,38 +8,53 @@ from skimage import transform
 from skimage import color
 
 # Compute the mean-squared error between two images
-def MSE(srcpath, dstpath, scale = 256):
+def MSE(srcpath, dstpath, gray2rgb = False, scale = 256):
     scr = io.imread(srcpath)
     dst = io.imread(dstpath)
-    scr = transform.resize(scr, (scale, scale))
-    dst = transform.resize(dst, (scale, scale))
+    if gray2rgb:
+        dst = np.concatenate((dst, dst, dst), axis = 2)
+    if scale > 0:
+        scr = transform.resize(scr, (scale, scale))
+        dst = transform.resize(dst, (scale, scale))
     mse = measure.compare_mse(scr, dst)
     return mse
 
 # Compute the normalized root mean-squared error (NRMSE) between two images
-def NRMSE(srcpath, dstpath, mse_type = 'Euclidean', scale = 256):
+def NRMSE(srcpath, dstpath, gray2rgb = False, scale = 256, mse_type = 'Euclidean'):
     scr = io.imread(srcpath)
     dst = io.imread(dstpath)
-    scr = transform.resize(scr, (scale, scale))
-    dst = transform.resize(dst, (scale, scale))
+    if gray2rgb:
+        dst = np.expand_dims(dst, axis = 2)
+        dst = np.concatenate((dst, dst, dst), axis = 2)
+    if scale > 0:
+        scr = transform.resize(scr, (scale, scale))
+        dst = transform.resize(dst, (scale, scale))
     nrmse = measure.compare_nrmse(scr, dst, norm_type = mse_type)
     return nrmse
 
 # Compute the peak signal to noise ratio (PSNR) for an image
-def PSNR(srcpath, dstpath, scale = 256):
+def PSNR(srcpath, dstpath, gray2rgb = False, scale = 256):
     scr = io.imread(srcpath)
     dst = io.imread(dstpath)
-    scr = transform.resize(scr, (scale, scale))
-    dst = transform.resize(dst, (scale, scale))
+    if gray2rgb:
+        dst = np.expand_dims(dst, axis = 2)
+        dst = np.concatenate((dst, dst, dst), axis = 2)
+    if scale > 0:
+        scr = transform.resize(scr, (scale, scale))
+        dst = transform.resize(dst, (scale, scale))
     psnr = measure.compare_psnr(scr, dst)
     return psnr
 
 # Compute the mean structural similarity index between two images
-def SSIM(srcpath, dstpath, RGBinput = True, scale = 256):
+def SSIM(srcpath, dstpath, RGBinput = True, gray2rgb = False, scale = 256):
     scr = io.imread(srcpath)
     dst = io.imread(dstpath)
-    scr = transform.resize(scr, (scale, scale))
-    dst = transform.resize(dst, (scale, scale))
+    if gray2rgb:
+        dst = np.expand_dims(dst, axis = 2)
+        dst = np.concatenate((dst, dst, dst), axis = 2)
+    if scale > 0:
+        scr = transform.resize(scr, (scale, scale))
+        dst = transform.resize(dst, (scale, scale))
     ssim = measure.compare_ssim(scr, dst, multichannel = RGBinput)
     return ssim
 
@@ -85,7 +100,7 @@ def text_save(content, filename, mode = 'a'):
     file.close()
 
 # Traditional indexes accuracy for dataset
-def Dset_Acuuracy(refpath_imglist, basepath_imglist):
+def Dset_Acuuracy(refpath_imglist, basepath_imglist, gray2rgb = False, scale = 0):
     # Define the list saving the accuracy
     nrmselist = []
     psnrlist = []
@@ -102,9 +117,9 @@ def Dset_Acuuracy(refpath_imglist, basepath_imglist):
         print(refimgpath)
         print(imgpath)
         # Compute the traditional indexes
-        nrmse = NRMSE(refimgpath, imgpath)
-        psnr = PSNR(refimgpath, imgpath)
-        ssim = SSIM(refimgpath, imgpath)
+        nrmse = NRMSE(refimgpath, imgpath, gray2rgb, scale)
+        psnr = PSNR(refimgpath, imgpath, gray2rgb, scale)
+        ssim = SSIM(refimgpath, imgpath, gray2rgb, scale)
         nrmselist.append(nrmse)
         psnrlist.append(psnr)
         ssimlist.append(ssim)
@@ -123,7 +138,9 @@ if __name__ == "__main__":
     # Create argument parser
     parser = argparse.ArgumentParser()
     parser.add_argument('--refpath', type = str, default = 'D:\\dataset\\Video\\test\\input_2dataset\\DAVIS', help = 'define reference path')
-    parser.add_argument('--basepath', type = str, default = 'D:\\dataset\\Video\\test\\ECCV18_release\\colorization\\ECCV16\\DAVIS-gray', help = 'define imgpath')
+    parser.add_argument('--basepath', type = str, default = 'D:\\dataset\\Video\\test\\input\\DAVIS-gray', help = 'define imgpath')
+    parser.add_argument('--gray2rgb', type = bool, default = True, help = 'whether there is an input is grayscale')
+    parser.add_argument('--scale', type = int, default = 256, help = 'whether the input needs resize')
     parser.add_argument('--savelist', type = bool, default = False, help = 'whether the results should be saved')
     opt = parser.parse_args()
     print(opt)
@@ -134,7 +151,7 @@ if __name__ == "__main__":
     a = get_jpgs(opt.refpath)
     b = get_jpgs(opt.basepath)
     assert a == b, 'the two dataset contains unpaired images which is wrong'
-    nrmselist, psnrlist, ssimlist, nrmseratio, psnrratio, ssimratio = Dset_Acuuracy(refpath_imglist, basepath_imglist)
+    nrmselist, psnrlist, ssimlist, nrmseratio, psnrratio, ssimratio = Dset_Acuuracy(refpath_imglist, basepath_imglist, gray2rgb = opt.gray2rgb, scale = opt.scale)
     print('The overall results: nrmse: %f, psnr: %f, ssim: %f' % (nrmseratio, psnrratio, ssimratio))
 
     # Save the files
