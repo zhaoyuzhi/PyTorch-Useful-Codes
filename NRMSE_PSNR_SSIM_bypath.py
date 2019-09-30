@@ -1,3 +1,4 @@
+import argparse
 import numpy as np
 import os
 from PIL import Image
@@ -47,7 +48,8 @@ def get_files(path):
     ret = []
     for root, dirs, files in os.walk(path):
         for filespath in files:
-            ret.append(os.path.join(root, filespath))
+            if os.path.join(root, filespath)[-3:] == 'jpg':
+                ret.append(os.path.join(root, filespath))
     return ret
 
 def get_jpgs(path):
@@ -55,7 +57,8 @@ def get_jpgs(path):
     ret = []
     for root, dirs, files in os.walk(path):
         for filespath in files:
-            ret.append(filespath)
+            if filespath[-3:] == 'jpg':
+                ret.append(filespath)
     return ret
     
 # read a txt expect EOF
@@ -96,6 +99,8 @@ def Dset_Acuuracy(refpath_imglist, basepath_imglist):
         # Full imgpath
         refimgpath = refpath_imglist[i]
         imgpath = basepath_imglist[i]
+        print(refimgpath)
+        print(imgpath)
         # Compute the traditional indexes
         nrmse = NRMSE(refimgpath, imgpath)
         psnr = PSNR(refimgpath, imgpath)
@@ -114,21 +119,27 @@ def Dset_Acuuracy(refpath_imglist, basepath_imglist):
     return nrmselist, psnrlist, ssimlist, nrmseratio, psnrratio, ssimratio
     
 if __name__ == "__main__":
-    
-    # Define reference path
-    refpath = 'D:\\dataset\\Video\\test\\input\\DAVIS'
-    # Define imgpath
-    basepath = 'D:\\dataset\\Video\\test\\ECCV18_release\\colorization\\ECCV16\\DAVIS-gray'
-    # Read all names
-    refpath_imglist = get_files(refpath)
-    basepath_imglist = get_files(basepath)
-    
-    nrmselist, psnrlist, ssimlist, nrmseratio, psnrratio, ssimratio = Dset_Acuuracy(refpath_imglist, basepath_imglist)
 
+    # Create argument parser
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--refpath', type = str, default = 'D:\\dataset\\Video\\test\\input_2dataset\\DAVIS', help = 'define reference path')
+    parser.add_argument('--basepath', type = str, default = 'D:\\dataset\\Video\\test\\ECCV18_release\\colorization\\ECCV16\\DAVIS-gray', help = 'define imgpath')
+    parser.add_argument('--savelist', type = bool, default = False, help = 'whether the results should be saved')
+    opt = parser.parse_args()
+    print(opt)
+
+    # Read all names
+    refpath_imglist = get_files(opt.refpath)
+    basepath_imglist = get_files(opt.basepath)
+    a = get_jpgs(opt.refpath)
+    b = get_jpgs(opt.basepath)
+    assert a == b, 'the two dataset contains unpaired images which is wrong'
+    nrmselist, psnrlist, ssimlist, nrmseratio, psnrratio, ssimratio = Dset_Acuuracy(refpath_imglist, basepath_imglist)
     print('The overall results: nrmse: %f, psnr: %f, ssim: %f' % (nrmseratio, psnrratio, ssimratio))
 
     # Save the files
-    text_save(nrmselist, "./nrmselist.txt")
-    text_save(psnrlist, "./psnrlist.txt")
-    text_save(ssimlist, "./ssimlist.txt")
+    if opt.savelist:
+        text_save(nrmselist, "./nrmselist.txt")
+        text_save(psnrlist, "./psnrlist.txt")
+        text_save(ssimlist, "./ssimlist.txt")
     
