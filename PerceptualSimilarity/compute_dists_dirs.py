@@ -18,6 +18,7 @@ model = models.PerceptualLoss(model='net-lin',net='alex',use_gpu=opt.use_gpu)
 f = open(opt.out,'w')
 files = os.listdir(opt.dir0)
 
+sum_dist = 0
 for file in files:
 	if(os.path.exists(os.path.join(opt.dir1,file))):
 		# Load images
@@ -28,9 +29,13 @@ for file in files:
 			img0 = img0.cuda()
 			img1 = img1.cuda()
 
-		# Compute distance
-		dist01 = model.forward(img0,img1)
-		print('%s: %.3f'%(file,dist01))
-		f.writelines('%s: %.6f\n'%(file,dist01))
+	# Compute distance
+	dist01 = model.forward(img0,img1)
+	sum_dist += dist01
+	print('%s: %.3f'%(file,dist01))
+	f.writelines('%s: %.6f\n'%(file,dist01))
+        
+sum_dist = sum_dist / len(files)
+print(sum_dist)
 
 f.close()
