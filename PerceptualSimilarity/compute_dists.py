@@ -1,6 +1,9 @@
 import argparse
 import models
 from util import util
+import os
+
+os.environ["CUDA_VISIBLE_DEVICES"] = "1"
 
 parser = argparse.ArgumentParser(formatter_class=argparse.ArgumentDefaultsHelpFormatter)
 parser.add_argument('-p0','--path0', type=str, default='./imgs/ex_ref.png')
@@ -17,8 +20,8 @@ img0 = util.im2tensor(util.load_image(opt.path0)) # RGB image from [-1,1]
 img1 = util.im2tensor(util.load_image(opt.path1))
 
 if(opt.use_gpu):
-	img1 = img0.cuda()
-	img1 = img1.cuda()
+    img1 = img0.cuda()
+    img1 = img1.cuda()
 
 
 # Compute distance

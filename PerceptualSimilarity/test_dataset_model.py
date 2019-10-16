@@ -23,30 +23,30 @@ parser.add_argument('--version', type=str, default='0.1', help='v0.1 is latest, 
 
 opt = parser.parse_args()
 if(opt.model in ['l2','ssim']):
-	opt.batch_size = 1
+    opt.batch_size = 1
 
 # initialize model
 model = dm.DistModel()
 # model.initialize(model=opt.model,net=opt.net,colorspace=opt.colorspace,model_path=opt.model_path,use_gpu=opt.use_gpu)
 model.initialize(model=opt.model, net=opt.net, colorspace=opt.colorspace, 
-	model_path=opt.model_path, use_gpu=opt.use_gpu, pnet_rand=opt.from_scratch, pnet_tune=opt.train_trunk,
-	version=opt.version, gpu_ids=opt.gpu_ids)
+    model_path=opt.model_path, use_gpu=opt.use_gpu, pnet_rand=opt.from_scratch, pnet_tune=opt.train_trunk,
+    version=opt.version, gpu_ids=opt.gpu_ids)
 
 if(opt.model in ['net-lin','net']):
-	print('Testing model [%s]-[%s]'%(opt.model,opt.net))
+    print('Testing model [%s]-[%s]'%(opt.model,opt.net))
 elif(opt.model in ['l2','ssim']):
-	print('Testing model [%s]-[%s]'%(opt.model,opt.colorspace))
+    print('Testing model [%s]-[%s]'%(opt.model,opt.colorspace))
 
 # initialize data loader
 for dataset in opt.datasets:
-	data_loader = dl.CreateDataLoader(dataset,dataset_mode=opt.dataset_mode, batch_size=opt.batch_size, nThreads=opt.nThreads)
+    data_loader = dl.CreateDataLoader(dataset,dataset_mode=opt.dataset_mode, batch_size=opt.batch_size, nThreads=opt.nThreads)
 
-	# evaluate model on data
-	if(opt.dataset_mode=='2afc'):
-		(score, results_verbose) = dm.score_2afc_dataset(data_loader, model.forward, name=dataset)
-	elif(opt.dataset_mode=='jnd'):
-		(score, results_verbose) = dm.score_jnd_dataset(data_loader, model.forward, name=dataset)
+    # evaluate model on data
+    if(opt.dataset_mode=='2afc'):
+        (score, results_verbose) = dm.score_2afc_dataset(data_loader, model.forward, name=dataset)
+    elif(opt.dataset_mode=='jnd'):
+        (score, results_verbose) = dm.score_jnd_dataset(data_loader, model.forward, name=dataset)
 
-	# print results
-	print('  Dataset [%s]: %.2f'%(dataset,100.*score))
+    # print results
+    print('  Dataset [%s]: %.2f'%(dataset,100.*score))
 
