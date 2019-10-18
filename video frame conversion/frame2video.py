@@ -47,7 +47,7 @@ def frame2video(readpath, savepath, fps = 24, size = (854, 480)):
     # write images
     for item in imglist:
         img = cv2.imread(item)
-        img = cv2.resize(img, (854, 480))
+        img = cv2.resize(img, size)
         video.write(img)
     video.release()
 
