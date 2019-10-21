@@ -20,7 +20,8 @@ def video2frame(readpath, savepath, interval = 24):
     c = 1
     while rval:
         if (c % interval == 0):
-            sp = os.path.join(savepath, readpath.split('/')[-1][:-4], str(c) + '.jpg')
+            #sp = os.path.join(savepath, readpath.split('/')[-1][:-4], str(c) + '.jpg')
+            sp = os.path.join(savepath, str(c) + '.jpg')
             check_path(sp)
             cv2.imwrite(sp, frame)
         c = c + 1
@@ -34,5 +35,6 @@ if __name__ == '__main__':
     readpath = './AircraftTakingOff1.avi'
     savepath = '/media/ztt/6864FEA364FE72E4/zhaoyuzhi/video_frame_conversion'
 
+    # interval = 1: extract each frame; interval = 24: extract frame every second
     video2frame(readpath, savepath, interval = 1)
     
