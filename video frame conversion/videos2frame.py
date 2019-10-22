@@ -32,6 +32,8 @@ def video2frame(readpath, savepath, interval = 24):
     c = 1
     while rval:
         if (c % interval == 0):
+            #tempname = ("%05d" % c) + '.jpg'
+            #sp = os.path.join(savepath, readpath.split('/')[-1][:-4], tempname)
             sp = os.path.join(savepath, readpath.split('/')[-1][:-4], str(c) + '.jpg')
             check_path(sp)
             cv2.imwrite(sp, frame)
