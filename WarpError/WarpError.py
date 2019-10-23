@@ -95,7 +95,7 @@ def define_imglist(path):
     wholepathlist = get_files(path)
     # classlist contains all class_names
     classlist = []
-    for i in range(wholepathlist):
+    for i in range(len(wholepathlist)):
         classname = wholepathlist[i].split('\\')[-2]
         if classname not in classlist:
             classlist.append(classname)
@@ -138,8 +138,8 @@ if __name__ == "__main__":
 
     # Define the parameters
     parser = argparse.ArgumentParser()
-    parser.add_argument('--base_path', type = str, default = '', help = 'the path contains all the generated frames')
-    parser.add_argument('--pwcnet_path', type = str, default = './pwcNet-default.pytorch', help = 'the path contains pre-trained PWC-Net')
+    parser.add_argument('--base_path', type = str, default = 'D:\\dataset\\2019CVPR_FVCN\\perframe\\videvo', help = 'the path contains all the generated frames')
+    parser.add_argument('--pwcnet_path', type = str, default = './models/pwcNet-default.pytorch', help = 'the path contains pre-trained PWC-Net')
     opt = parser.parse_args()
     print(opt)
 
@@ -181,3 +181,4 @@ if __name__ == "__main__":
     # Compute average loss
     avg_loss = loss / loss_count
     print('The average loss: %.8f' % (avg_loss.item()))
+    

@@ -150,10 +150,10 @@ if __name__ == "__main__":
 
     # Define the parameters
     parser = argparse.ArgumentParser()
-    parser.add_argument('--base_path', type = str, default = '/media/ztt/Seagate Backup Plus Drive/dataset/Video/test/ECCV18_release/colorization/Sig16/videvo-gray', help = 'the path contains all the generated frames')
+    parser.add_argument('--base_path', type = str, default = 'D:\\dataset\\Video\\test\\input\\videvo', help = 'the path contains all the generated frames')
     parser.add_argument('--imagelist_txt', type = str, default = './videvo_test_imagelist.txt', help = 'the path contains all the relative image names')
     parser.add_argument('--class_txt', type = str, default = './videvo_test_class.txt', help = 'the path contains all the class names')
-    parser.add_argument('--pwcnet_path', type = str, default = './pwcNet-default.pytorch', help = 'the path contains pre-trained PWC-Net')
+    parser.add_argument('--pwcnet_path', type = str, default = './models/pwcNet-default.pytorch', help = 'the path contains pre-trained PWC-Net')
     opt = parser.parse_args()
     print(opt)
 
@@ -195,3 +195,4 @@ if __name__ == "__main__":
     # Compute average loss
     avg_loss = loss / loss_count
     print('The average loss: %.8f' % (avg_loss.item()))
+    
