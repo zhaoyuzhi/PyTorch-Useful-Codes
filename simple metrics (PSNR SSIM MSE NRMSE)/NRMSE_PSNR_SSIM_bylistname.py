@@ -1,44 +1,61 @@
+import argparse
 import numpy as np
 import os
-from PIL import Image
+import cv2
 from skimage import io
 from skimage import measure
 from skimage import transform
 from skimage import color
 
 # Compute the mean-squared error between two images
-def MSE(srcpath, dstpath, scale = 256):
+def MSE(srcpath, dstpath, gray2rgb = False, scale = 256):
     scr = io.imread(srcpath)
     dst = io.imread(dstpath)
-    scr = transform.resize(scr, (scale, scale))
-    dst = transform.resize(dst, (scale, scale))
+    if gray2rgb:
+        dst = np.expand_dims(dst, axis = 2)
+        dst = np.concatenate((dst, dst, dst), axis = 2)
+    if scale != (0, 0):
+        scr = cv2.resize(scr, scale)
+        dst = cv2.resize(dst, scale)
     mse = measure.compare_mse(scr, dst)
     return mse
 
 # Compute the normalized root mean-squared error (NRMSE) between two images
-def NRMSE(srcpath, dstpath, mse_type = 'Euclidean', scale = 256):
+def NRMSE(srcpath, dstpath, gray2rgb = False, scale = 256, mse_type = 'Euclidean'):
     scr = io.imread(srcpath)
     dst = io.imread(dstpath)
-    scr = transform.resize(scr, (scale, scale))
-    dst = transform.resize(dst, (scale, scale))
+    if gray2rgb:
+        dst = np.expand_dims(dst, axis = 2)
+        dst = np.concatenate((dst, dst, dst), axis = 2)
+    if scale != (0, 0):
+        scr = cv2.resize(scr, scale)
+        dst = cv2.resize(dst, scale)
     nrmse = measure.compare_nrmse(scr, dst, norm_type = mse_type)
     return nrmse
 
 # Compute the peak signal to noise ratio (PSNR) for an image
-def PSNR(srcpath, dstpath, scale = 256):
+def PSNR(srcpath, dstpath, gray2rgb = False, scale = 256):
     scr = io.imread(srcpath)
     dst = io.imread(dstpath)
-    scr = transform.resize(scr, (scale, scale))
-    dst = transform.resize(dst, (scale, scale))
+    if gray2rgb:
+        dst = np.expand_dims(dst, axis = 2)
+        dst = np.concatenate((dst, dst, dst), axis = 2)
+    if scale != (0, 0):
+        scr = cv2.resize(scr, scale)
+        dst = cv2.resize(dst, scale)
     psnr = measure.compare_psnr(scr, dst)
     return psnr
 
 # Compute the mean structural similarity index between two images
-def SSIM(srcpath, dstpath, RGBinput = True, scale = 256):
+def SSIM(srcpath, dstpath, gray2rgb = False, scale = 256, RGBinput = True):
     scr = io.imread(srcpath)
     dst = io.imread(dstpath)
-    scr = transform.resize(scr, (scale, scale))
-    dst = transform.resize(dst, (scale, scale))
+    if gray2rgb:
+        dst = np.expand_dims(dst, axis = 2)
+        dst = np.concatenate((dst, dst, dst), axis = 2)
+    if scale != (0, 0):
+        scr = cv2.resize(scr, scale)
+        dst = cv2.resize(dst, scale)
     ssim = measure.compare_ssim(scr, dst, multichannel = RGBinput)
     return ssim
 
@@ -66,7 +83,7 @@ def text_save(content, filename, mode = 'a'):
     file.close()
 
 # Traditional indexes accuracy for dataset
-def Dset_Acuuracy(imglist, refpath, basepath):
+def Dset_Acuuracy(imglist, refpath, basepath, gray2rgb = False, scale = (0, 0)):
     # Define the list saving the accuracy
     nrmselist = []
     psnrlist = []
@@ -78,13 +95,13 @@ def Dset_Acuuracy(imglist, refpath, basepath):
     # Compute the accuracy
     for i in range(len(imglist)):
         # Full imgpath
-        imgname = imglist[i] + '.JPEG'
+        imgname = imglist[i]# + '.JPEG'
         refimgpath = os.path.join(refpath, imgname)
         imgpath = os.path.join(basepath, imgname)
         # Compute the traditional indexes
-        nrmse = NRMSE(refimgpath, imgpath)
-        psnr = PSNR(refimgpath, imgpath)
-        ssim = SSIM(refimgpath, imgpath)
+        nrmse = NRMSE(refimgpath, imgpath, gray2rgb, scale, 'Euclidean')
+        psnr = PSNR(refimgpath, imgpath, gray2rgb, scale)
+        ssim = SSIM(refimgpath, imgpath, gray2rgb, scale, True)
         nrmselist.append(nrmse)
         psnrlist.append(psnr)
         ssimlist.append(ssim)
@@ -100,14 +117,21 @@ def Dset_Acuuracy(imglist, refpath, basepath):
     
 if __name__ == "__main__":
     
+    # Create argument parser
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--imglist', type = str, default = './ILSVRC2012_10k_name.txt', help = 'define imglist txt path')
+    parser.add_argument('--refpath', type = str, default = 'D:\\dataset\\Video\\test\\input_2dataset\\videvo', help = 'define reference path')
+    parser.add_argument('--basepath', type = str, default = 'D:\\dataset\\Video\\test\\input\\videvo-gray', help = 'define imgpath')
+    parser.add_argument('--gray2rgb', type = bool, default = False, help = 'whether there is an input is grayscale')
+    parser.add_argument('--scale', type = tuple, default = (256, 256), help = 'whether the input needs resize')
+    parser.add_argument('--savelist', type = bool, default = False, help = 'whether the results should be saved')
+    opt = parser.parse_args()
+    print(opt)
+
     # Read all names
-    imglist = text_readlines('./ILSVRC2012_10k_name.txt')
-    # Define reference path
-    refpath = 'C:\\Users\\ZHAO Yuzhi\\Desktop\\dataset\\ILSVRC2012_val_256'
-    # Define imgpath
-    basepath = 'C:\\Users\\ZHAO Yuzhi\\Desktop\\dataset\\colorization_results\\ILSVRC2012_sample10_noPer'
+    imglist = text_readlines(opt.imglist)
     
-    nrmselist, psnrlist, ssimlist, nrmseratio, psnrratio, ssimratio = Dset_Acuuracy(imglist, refpath, basepath)
+    nrmselist, psnrlist, ssimlist, nrmseratio, psnrratio, ssimratio = Dset_Acuuracy(imglist, opt.refpath, opt.basepath, gray2rgb = opt.gray2rgb, scale = opt.scale)
 
     print('The overall results: nrmse: %f, psnr: %f, ssim: %f' % (nrmseratio, psnrratio, ssimratio))
 

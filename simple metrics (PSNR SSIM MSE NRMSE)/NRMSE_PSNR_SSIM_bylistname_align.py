@@ -78,24 +78,6 @@ def SSIM(srcpath, dstpath, gray2rgb = False, scale = True, RGBinput = True):
     ssim = measure.compare_ssim(scr, dst, multichannel = RGBinput)
     return ssim
 
-def get_files(path):
-    # read a folder, return the complete path
-    ret = []
-    for root, dirs, files in os.walk(path):
-        for filespath in files:
-            if os.path.join(root, filespath)[-3:] == 'jpg':
-                ret.append(os.path.join(root, filespath))
-    return ret
-
-def get_jpgs(path):
-    # read a folder, return the image name
-    ret = []
-    for root, dirs, files in os.walk(path):
-        for filespath in files:
-            if filespath[-3:] == 'jpg':
-                ret.append(filespath)
-    return ret
-    
 # read a txt expect EOF
 def text_readlines(filename):
     # Try to read a txt file and return a list.Return [] if there was a mistake.
@@ -120,7 +102,7 @@ def text_save(content, filename, mode = 'a'):
     file.close()
 
 # Traditional indexes accuracy for dataset
-def Dset_Acuuracy(refpath_imglist, basepath_imglist, gray2rgb = False, scale = True):
+def Dset_Acuuracy(imglist, refpath, basepath, gray2rgb = False, scale = True):
     # Define the list saving the accuracy
     nrmselist = []
     psnrlist = []
@@ -130,16 +112,15 @@ def Dset_Acuuracy(refpath_imglist, basepath_imglist, gray2rgb = False, scale = T
     ssimratio = 0
 
     # Compute the accuracy
-    for i in range(len(refpath_imglist)):
+    for i in range(len(imglist)):
         # Full imgpath
-        refimgpath = refpath_imglist[i]
-        imgpath = basepath_imglist[i]
-        print(refimgpath)
-        print(imgpath)
+        imgname = imglist[i]# + '.JPEG'
+        refimgpath = os.path.join(refpath, imgname)
+        imgpath = os.path.join(basepath, imgname)
         # Compute the traditional indexes
-        nrmse = NRMSE(refimgpath, imgpath, gray2rgb, scale)
+        nrmse = NRMSE(refimgpath, imgpath, gray2rgb, scale, 'Euclidean')
         psnr = PSNR(refimgpath, imgpath, gray2rgb, scale)
-        ssim = SSIM(refimgpath, imgpath, gray2rgb, scale)
+        ssim = SSIM(refimgpath, imgpath, gray2rgb, scale, True)
         nrmselist.append(nrmse)
         psnrlist.append(psnr)
         ssimlist.append(ssim)
@@ -147,36 +128,34 @@ def Dset_Acuuracy(refpath_imglist, basepath_imglist, gray2rgb = False, scale = T
         psnrratio = psnrratio + psnr
         ssimratio = ssimratio + ssim
         print('The %dth image: nrmse: %f, psnr: %f, ssim: %f' % (i, nrmse, psnr, ssim))
-    nrmseratio = nrmseratio / len(refpath_imglist)
-    psnrratio = psnrratio / len(refpath_imglist)
-    ssimratio = ssimratio / len(refpath_imglist)
+    nrmseratio = nrmseratio / len(imglist)
+    psnrratio = psnrratio / len(imglist)
+    ssimratio = ssimratio / len(imglist)
 
     return nrmselist, psnrlist, ssimlist, nrmseratio, psnrratio, ssimratio
     
 if __name__ == "__main__":
-
+    
     # Create argument parser
     parser = argparse.ArgumentParser()
-    parser.add_argument('--refpath', type = str, default = 'D:\\dataset\\VCGAN comparison\\2dataset_RGB\\DAVIS', help = 'define reference path')
-    parser.add_argument('--basepath', type = str, default = 'D:\\dataset\\2019CVPR_FVCN\\perframe\\DAVIS', help = 'define imgpath')
+    parser.add_argument('--imglist', type = str, default = './ILSVRC2012_10k_name.txt', help = 'define imglist txt path')
+    parser.add_argument('--refpath', type = str, default = 'D:\\dataset\\Video\\test\\input_2dataset\\videvo', help = 'define reference path')
+    parser.add_argument('--basepath', type = str, default = 'D:\\dataset\\Video\\test\\input\\videvo-gray', help = 'define imgpath')
     parser.add_argument('--gray2rgb', type = bool, default = False, help = 'whether there is an input is grayscale')
-    parser.add_argument('--scale', type = bool, default = True, help = 'if True, then align the resize based on refpath; if False, based on basepath')
+    parser.add_argument('--scale', type = tuple, default = True, help = 'whether the input needs resize')
     parser.add_argument('--savelist', type = bool, default = False, help = 'whether the results should be saved')
     opt = parser.parse_args()
     print(opt)
 
     # Read all names
-    refpath_imglist = get_files(opt.refpath)
-    basepath_imglist = get_files(opt.basepath)
-    a = get_jpgs(opt.refpath)
-    b = get_jpgs(opt.basepath)
-    assert a == b, 'the two dataset contains unpaired images which is wrong'
-    nrmselist, psnrlist, ssimlist, nrmseratio, psnrratio, ssimratio = Dset_Acuuracy(refpath_imglist, basepath_imglist, gray2rgb = opt.gray2rgb, scale = opt.scale)
+    imglist = text_readlines(opt.imglist)
+    
+    nrmselist, psnrlist, ssimlist, nrmseratio, psnrratio, ssimratio = Dset_Acuuracy(imglist, opt.refpath, opt.basepath, gray2rgb = opt.gray2rgb, scale = opt.scale)
+
     print('The overall results: nrmse: %f, psnr: %f, ssim: %f' % (nrmseratio, psnrratio, ssimratio))
 
     # Save the files
-    if opt.savelist:
-        text_save(nrmselist, "./nrmselist.txt")
-        text_save(psnrlist, "./psnrlist.txt")
-        text_save(ssimlist, "./ssimlist.txt")
+    text_save(nrmselist, "./nrmselist.txt")
+    text_save(psnrlist, "./psnrlist.txt")
+    text_save(ssimlist, "./ssimlist.txt")
     
