@@ -17,6 +17,11 @@ def load_image(path):
         return cv2.imread(path)[:,:,::-1]
     else:
         img = (255*plt.imread(path)[:,:,:3]).astype('uint8')
+        '''
+        # if it is grayscale and JPEG
+        import cv2
+        img = cv2.imread(path)[:,:,::-1]
+        '''
 
     return img
 
