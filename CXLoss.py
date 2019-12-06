@@ -4,6 +4,7 @@ Created on Tue Jan  8 12:40:59 2019
 
 @author: ZHAO Yuzhi
 """
+# please refer to original paper: The Contextual Loss for Image Transformation with Non-Aligned Data
 
 # import tensorflow as tf
 import torch
