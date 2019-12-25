@@ -10,3 +10,8 @@ save_folder = './'
 
 if not os.path.exists(save_folder):
     os.mkdir(save_folder)
+
+def check_path(path):
+    if not os.path.exists(path):
+        os.mkdir(path)
+        
