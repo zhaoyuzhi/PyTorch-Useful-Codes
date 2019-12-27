@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 """
 Created on Tue Mar  5 16:31:22 2019
-
 @author: ZHAO Yuzhi
 """
 
@@ -25,3 +24,4 @@ class GradLoss(nn.Module):
         w_loss = self.MSEloss(x_w_grad, y_w_grad)
         
         return self.GradLoss_weight * (h_loss + w_loss)
+        
