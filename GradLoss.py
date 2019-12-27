@@ -9,10 +9,10 @@ import torch
 import torch.nn as nn
 
 class GradLoss(nn.Module):
-    def __init__(self, GradLoss_weight = 1):
+    def __init__(self):
         super(GradLoss, self).__init__()
-        self.GradLoss_weight = GradLoss_weight
         self.MSEloss = nn.MSELoss()
+        
     def forward(self, x, y):
         h_x = x.size()[2]
         w_x = x.size()[3]
