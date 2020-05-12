@@ -1,51 +1,50 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Tue Nov 27 11:15:33 2018
-
-@author: ZHAO Yuzhi
-"""
-
+import argparse
 import os
-from PIL import Image
+import cv2
+import numpy as np
 
-# read a txt expect EOF
-def text_readlines(filename):
-    # Try to read a txt file and return a list.Return [] if there was a mistake.
-    try:
-        file = open(filename, 'r')
-    except IOError:
-        error = []
-        return error
-    content = file.readlines()
-    # This for loop deletes the EOF (like \n)
-    for i in range(len(content)):
-        content[i] = content[i][:len(content[i])-1]
-    file.close()
-    return content
+def get_files(path):
+    # read a folder, return the complete path
+    ret = []
+    for root, dirs, files in os.walk(path):
+        for filespath in files:
+            ret.append(os.path.join(root, filespath))
+    return ret
 
-# resize all images
-def resize_all_images(save_img_path, fullname, jpgname, resize_amount):
-    for i in range(len(fullname)):
-        final_path = save_img_path + '\\' + jpgname[i]
-        img = Image.open(fullname[i])
-        channel = len(img.split())
-        if channel == 1:
-            img = img.convert('L')
-        if channel > 1:
-            img = img.convert('RGB')
-        # img.resize((width, height), Image.ANTIALIAS)
-        if i % 10000 == 0:
-            print(i)
-        img = img.resize((resize_amount, resize_amount), Image.ANTIALIAS)
-        img.save(final_path)
+def get_jpgs(path):
+    # read a folder, return the image name
+    ret = []
+    for root, dirs, files in os.walk(path):
+        for filespath in files:
+            ret.append(filespath)
+    return ret
 
-if __name__ == '__main__':
-    
-    fullname = text_readlines("C:\\Users\\ZHAO Yuzhi\\Desktop\\code\\Colorization\\DiskD_ILSVRC2012_train.txt")
-    jpgname = text_readlines("C:\\Users\\ZHAO Yuzhi\\Desktop\\code\\Colorization\\ILSVRC2012_train_name.txt")
-    print('the number of all image:', len(fullname))
-    
-    # resize all images
-    save_img_path = 'C:\\Users\\ZHAO Yuzhi\\Desktop\\dataset\\ILSVRC2012_train64'
-    resize_amount = 64
-    resize_all_images(save_img_path, fullname, jpgname, resize_amount)
+def check_path(path):
+    if not os.path.exists(path):
+        os.makedirs(path)
+
+if __name__ == "__main__":
+    # ----------------------------------------
+    #        Initialize the parameters
+    # ----------------------------------------
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--readfolder', type = str, \
+        default = 'F:\\dataset, task related\\Face Dataset\\CelebA\\Img_64_dlib', \
+            help = 'readfolder name')
+    parser.add_argument('--savefolder', type = str, \
+        default = 'F:\\dataset, task related\\Face Dataset\\CelebA\\Img_128_dlib', \
+            help = 'savefolder name')
+    parser.add_argument('--resize', type = int, default = 128, help = 'resize amount')
+    opt = parser.parse_args()
+
+    imglist = get_files(opt.readfolder)
+    namelist = get_jpgs(opt.readfolder)
+    check_path(opt.savefolder)
+
+    for i in range(len(imglist)):
+        readname = imglist[i]
+        savename = os.path.join(opt.savefolder, namelist[i])
+        print(i, savename)
+        img = cv2.imread(readname)
+        img = cv2.resize(img, (opt.resize, opt.resize))
+        cv2.imwrite(savename, img)
