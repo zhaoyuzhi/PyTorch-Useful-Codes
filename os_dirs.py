@@ -1,10 +1,3 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Tue Sep 25 19:36:00 2018
-
-@author: yzzhao2
-"""
-
 import os
 
 # read path
@@ -25,12 +18,57 @@ def get_dirs(path):
                 ret.append(name)
     return ret
 
-def get_jpgs(path):
+def get_filespaths(path):
     # read a folder, return the image name
     ret = []
     for root, dirs, files in os.walk(path):
         for filespath in files:
             ret.append(filespath)
+    return ret
+
+def get_jpgs(path):
+    # read a folder, return the image name
+    ret = []
+    for root, dirs, files in os.walk(path):
+        for filespath in files:
+            if 'jpg' == filespath[-3:]:
+                ret.append(os.path.join(root, filespath))
+    return ret
+
+def get_JPEGs(path):
+    # read a folder, return the image name
+    ret = []
+    for root, dirs, files in os.walk(path):
+        for filespath in files:
+            if 'JPEG' == filespath[-4:]:
+                ret.append(os.path.join(root, filespath))
+    return ret
+
+def get_pngs(path):
+    # read a folder, return the image name
+    ret = []
+    for root, dirs, files in os.walk(path):
+        for filespath in files:
+            if 'png' == filespath[-3:]:
+                ret.append(os.path.join(root, filespath))
+    return ret
+
+def get_NEFs(path):
+    # read a folder, return the image name
+    ret = []
+    for root, dirs, files in os.walk(path):
+        for filespath in files:
+            if 'NEF' == filespath[-3:]:
+                ret.append(os.path.join(root, filespath))
+    return ret
+
+def get_raws(path):
+    # read a folder, return the image name
+    ret = []
+    for root, dirs, files in os.walk(path):
+        for filespath in files:
+            if 'raw' == filespath[-3:]:
+                ret.append(os.path.join(root, filespath))
     return ret
 
 def get_relative_dirs(path):
