@@ -100,3 +100,47 @@ class PixelUnShuffleAlign(nn.Module):
 
         x = x.reshape(-1, c, h, w)
         return x
+
+if __name__ == "__main__":
+    
+    # implementation 1
+    
+    x = torch.range(start = 0, end = 31).reshape([1, 8, 2, 2])
+    print('x:')
+    print(x.shape)
+    print(x)
+
+    y = F.pixel_shuffle(x, 2)
+    print('y:')
+    print(y.shape)
+    print(y)
+
+    x_ = PixelUnShuffle.pixel_unshuffle(y, 2)
+    print('x_:')
+    print(x_.shape)
+    print(x_)
+
+    s = torch.randn(1, 3, 256, 256)
+    ss = PixelUnShuffle.pixel_unshuffle(s, 2)
+    ssss = PixelUnShuffle.pixel_unshuffle(s, 4)
+    print(ss.shape, ssss.shape)
+
+    # implementation 2
+        
+    subpixeldown = PixelUnShuffleAlign(downscale_factor = 2, mode = 'pytorch')
+    subpixelup = PixelShuffleAlign(upscale_factor = 2, mode = 'pytorch')
+    x = torch.randn(1, 3, 64, 64)
+    y = subpixeldown(x)
+    print(y.shape)
+    z = subpixelup(y)
+    print(z.shape)
+    print(x - z)
+
+    subpixeldown = PixelUnShuffleAlign(downscale_factor = 4, mode = 'pytorch')
+    subpixelup = PixelShuffleAlign(upscale_factor = 4, mode = 'pytorch')
+    x = torch.randn(1, 3, 64, 64)
+    y = subpixeldown(x)
+    print(y.shape)
+    z = subpixelup(y)
+    print(z.shape)
+    print(x - z)
