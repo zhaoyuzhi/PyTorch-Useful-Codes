@@ -30,4 +30,5 @@ for i in range(length):
     readpath = os.path.join(rgb_dir, jpg_list[i])
     savepath = os.path.join(gray_dir, jpg_list[i])
     img = Image.open(readpath).convert('L')
+    # BW = 0.2989 * R + 0.5870 * G + 0.1140 * B 
     img.save(savepath)
