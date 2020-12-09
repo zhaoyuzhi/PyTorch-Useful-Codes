@@ -23,5 +23,5 @@ class GradLoss(nn.Module):
         h_loss = self.MSEloss(x_h_grad, y_h_grad)
         w_loss = self.MSEloss(x_w_grad, y_w_grad)
         
-        return self.GradLoss_weight * (h_loss + w_loss)
+        return h_loss + w_loss
         
