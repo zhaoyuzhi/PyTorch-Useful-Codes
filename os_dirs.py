@@ -111,7 +111,7 @@ def text_readlines(filename):
     content = file.readlines()
     # This for loop deletes the EOF (like \n)
     for i in range(len(content)):
-        content[i] = content[i][:len(content[i])-1]
+        content[i] = content[i][:len(content[i]) - 1]
     file.close()
     return content
 
