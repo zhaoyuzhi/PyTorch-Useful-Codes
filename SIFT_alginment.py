@@ -59,13 +59,9 @@ cv2.namedWindow('Result',cv2.WINDOW_NORMAL)
 cv2.imshow('1',img1)
 cv2.imshow('2',img2)
 cv2.imshow('Result',result)
- 
+
  
 #cv2.imshow('Result',allImg)
 if cv2.waitKey(2000) & 0xff == ord('q'):
     cv2.destroyAllWindows()
     cv2.waitKey(1)
-    
-————————————————
-版权声明：本文为CSDN博主「奔跑的Yancy」的原创文章，遵循CC 4.0 BY-SA版权协议，转载请附上原文出处链接及本声明。
-原文链接：https://blog.csdn.net/lyxleft/article/details/89476175
