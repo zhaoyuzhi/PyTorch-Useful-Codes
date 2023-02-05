@@ -1,9 +1,3 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Tue Mar  5 16:31:22 2019
-@author: ZHAO Yuzhi
-"""
-
 import torch
 import torch.nn as nn
 
@@ -23,5 +17,14 @@ class GradLoss(nn.Module):
         h_loss = self.MSEloss(x_h_grad, y_h_grad)
         w_loss = self.MSEloss(x_w_grad, y_w_grad)
         
-        return h_loss + w_loss
-        
+        return h_loss + w_loss   
+
+if __name__ == "__main__":
+
+    a = torch.randn(4, 3, 64, 64).cuda()
+    b = torch.randn(4, 3, 64, 64).cuda()
+    l = GradLoss()
+    loss = l(a, b)
+    print(loss)
+    print(loss.shape)
+    print(loss.item())

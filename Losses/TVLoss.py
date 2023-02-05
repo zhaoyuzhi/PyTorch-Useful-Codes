@@ -1,10 +1,3 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Tue Mar  5 16:31:22 2019
-
-@author: ZHAO Yuzhi
-"""
-
 import torch
 import torch.nn as nn
 
@@ -24,3 +17,12 @@ class TVLoss(nn.Module):
     
     def _tensor_size(self, t):
         return t.size()[1] * t.size()[2] * t.size()[3]
+
+if __name__ == "__main__":
+
+    a = torch.randn(4, 3, 64, 64).cuda()
+    l = TVLoss()
+    loss = l(a)
+    print(loss)
+    print(loss.shape)
+    print(loss.item())

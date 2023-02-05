@@ -27,4 +27,12 @@ class L0_Loss(nn.Module):
 
         return ret
 
-criterion_L0 = L0_Loss(total_epoch = 100)           # the total_epoch should be pre-defined
+if __name__ == "__main__":
+
+    a = torch.randn(4, 3, 64, 64).cuda()
+    b = torch.randn(4, 3, 64, 64).cuda()
+    criterion_L0 = L0_Loss(total_epoch = 100)           # the total_epoch should be pre-defined
+    loss = criterion_L0(a, b, 10)
+    print(loss)
+    print(loss.shape)
+    print(loss.item())
