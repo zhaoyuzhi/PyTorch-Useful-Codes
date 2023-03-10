@@ -1,8 +1,9 @@
 import os
 
-# read path
+# read a path, return a list
+
 def get_files(path):
-    # read a folder, return the complete path
+    # read a folder, return the complete path of all files
     ret = []
     for root, dirs, files in os.walk(path):
         for filespath in files:
@@ -10,7 +11,7 @@ def get_files(path):
     return ret
 
 def get_dirs(path):
-    # read a folder, return a list of names of child folders
+    # read a folder, return all the sub-folders
     ret = []
     for root, dirs, files in os.walk(path):
         for name in dirs:
@@ -18,8 +19,18 @@ def get_dirs(path):
                 ret.append(name)
     return ret
 
+def get_subfolders(path):
+    # read a folder, return all the sub-folders
+    ret = []
+    for root, dirs, files in os.walk(path):
+        for filespath in files:
+            if root not in ret:
+                ret.append(root)
+                break
+    return ret
+
 def get_filespaths(path):
-    # read a folder, return the image name
+    # read a folder, return all the file names
     ret = []
     for root, dirs, files in os.walk(path):
         for filespath in files:
@@ -72,17 +83,17 @@ def get_raws(path):
     return ret
 
 def get_relative_dirs(path):
-    # read a folder, return the complete path
+    # read a folder, return all the relative dirs
     ret = []
     for root, dirs, files in os.walk(path):
         for filespath in files:
-            a = os.path.join(root,filespath)
+            a = os.path.join(root, filespath)
             a = a.split('\\')[-2] + '/' + a.split('\\')[-1]
             ret.append(a)
     return ret
 
 def get_second_last_dirs(path):
-    # read a folder, return the image name
+    # read a folder, return all the second last dirs
     ret = []
     for root, dirs, files in os.walk(path):
         for filespath in files:
