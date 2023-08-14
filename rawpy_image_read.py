@@ -3,7 +3,7 @@ import rawpy.enhance
 import imageio
 
 # Load a RAW file and save the postprocessed image using default parameters:
-path = 'C:\\Users\\yzzha\\Desktop\\DCIM\\101D5200\\sorted\\DSC_2937\\DSC_2940.NEF'
+path = 'D:\\DCIM\\101D5200\\sorted\\DSC_2937\\DSC_2940.NEF'
 with rawpy.imread(path) as raw:
     rgb = raw.postprocess()
 print(rgb.dtype, rgb.shape)

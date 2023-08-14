@@ -1,7 +1,23 @@
 # PyTorch-Useful-Codes
 
-Some Blocks and Networks implemented by PyTorch
+## PyTorch
 
-Some knowledges:
+- PyTorch operations
 
-1. BW = 0.2989 * R + 0.5870 * G + 0.1140 * B
+- simple metrics (PSNR SSIM MSE NRMSE)
+
+## Python
+
+- Network requests
+
+- Path processing
+
+- Traditional CV
+
+- Video frame conversion
+
+- WarpError (based on PWC-Net codes)
+
+## Some knowledges:
+
+- Grayscale = 0.2989 * R + 0.5870 * G + 0.1140 * B

@@ -23,9 +23,12 @@ def download(url):
     with youtube_dl.YoutubeDL(ydl_opts) as ydl:
         result = ydl.download([url])
 
-filelist = text_readlines('videolist6.txt')
-print(filelist)
+if __name__ == "__main__":
 
-for i, item in enumerate(filelist):
-    print('The %d-th video named %s' % (i, item))
-    download(item)
+    # read a file list and then download the videos in it
+    filelist = text_readlines('videolist6.txt')
+    print(filelist)
+
+    for i, item in enumerate(filelist):
+        print('The %d-th video named %s' % (i, item))
+        download(item)
