@@ -3,8 +3,8 @@ import os
 input_dir = "E:\\Deblur\\data collect by myself\\123"
 output_dir = "E:\\Deblur\\data collect by myself\\123"
 
+# read a folder, return the image name
 def get_jpgs(path):
-    # read a folder, return the image name
     ret = []
     for root, dirs, files in os.walk(path):
         for filespath in files:

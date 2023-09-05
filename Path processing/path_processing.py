@@ -2,16 +2,16 @@ import os
 
 # read a path, return a list
 
+# read a folder, return the complete path of all files
 def get_files(path):
-    # read a folder, return the complete path of all files
     ret = []
     for root, dirs, files in os.walk(path):
         for filespath in files:
             ret.append(os.path.join(root, filespath))
     return ret
 
+# read a folder, return all the sub-folders
 def get_dirs(path):
-    # read a folder, return all the sub-folders
     ret = []
     for root, dirs, files in os.walk(path):
         for name in dirs:
@@ -19,8 +19,8 @@ def get_dirs(path):
                 ret.append(name)
     return ret
 
+# read a folder, return all the sub-folders
 def get_subfolders(path):
-    # read a folder, return all the sub-folders
     ret = []
     for root, dirs, files in os.walk(path):
         for filespath in files:
@@ -29,16 +29,16 @@ def get_subfolders(path):
                 break
     return ret
 
+# read a folder, return all the file names
 def get_filespaths(path):
-    # read a folder, return all the file names
     ret = []
     for root, dirs, files in os.walk(path):
         for filespath in files:
             ret.append(filespath)
     return ret
 
+# read a folder, return the image name, ended with jpg
 def get_jpgs(path):
-    # read a folder, return the image name
     ret = []
     for root, dirs, files in os.walk(path):
         for filespath in files:
@@ -46,8 +46,8 @@ def get_jpgs(path):
                 ret.append(os.path.join(root, filespath))
     return ret
 
+# read a folder, return the image name, ended with jpeg
 def get_JPEGs(path):
-    # read a folder, return the image name
     ret = []
     for root, dirs, files in os.walk(path):
         for filespath in files:
@@ -55,8 +55,8 @@ def get_JPEGs(path):
                 ret.append(os.path.join(root, filespath))
     return ret
 
+# read a folder, return the image name, ended with png
 def get_pngs(path):
-    # read a folder, return the image name
     ret = []
     for root, dirs, files in os.walk(path):
         for filespath in files:
@@ -64,8 +64,8 @@ def get_pngs(path):
                 ret.append(os.path.join(root, filespath))
     return ret
 
+# read a folder, return the image name, ended with nef
 def get_NEFs(path):
-    # read a folder, return the image name
     ret = []
     for root, dirs, files in os.walk(path):
         for filespath in files:
@@ -73,8 +73,8 @@ def get_NEFs(path):
                 ret.append(os.path.join(root, filespath))
     return ret
 
+# read a folder, return the image name, ended with raw
 def get_raws(path):
-    # read a folder, return the image name
     ret = []
     for root, dirs, files in os.walk(path):
         for filespath in files:
@@ -82,8 +82,8 @@ def get_raws(path):
                 ret.append(os.path.join(root, filespath))
     return ret
 
+# read a folder, return all the relative dirs
 def get_relative_dirs(path):
-    # read a folder, return all the relative dirs
     ret = []
     for root, dirs, files in os.walk(path):
         for filespath in files:
@@ -92,8 +92,8 @@ def get_relative_dirs(path):
             ret.append(a)
     return ret
 
+# read a folder, return all the second last dirs
 def get_second_last_dirs(path):
-    # read a folder, return all the second last dirs
     ret = []
     for root, dirs, files in os.walk(path):
         for filespath in files:
