@@ -45,8 +45,11 @@ def text_readlines(filename):
 if __name__ == "__main__":
 
     parser = argparse.ArgumentParser()
-    parser.add_argument('--readpath', type = str, default = 'C:\\users\\features', help = 'readpath')
-    parser.add_argument('--savepath', type = str, default = 'allocation_results', help = 'savepath')
+    parser.add_argument('--readpath', type = str, \
+        default = 'C:\\users\\features', \
+            help = 'readpath')
+    parser.add_argument('--savepath', type = str, default = 'files', help = 'savepath')
+    parser.add_argument('--save_allocation_path', type = str, default = 'allocation_results', help = 'save_allocation_path')
     parser.add_argument('--K', type = int, default = 1200, help = 'K value of Kmeans')
     opt = parser.parse_args()
 
@@ -65,7 +68,9 @@ if __name__ == "__main__":
     for i in range(len(filelist)):
         filepath = filelist[i]
         label_cluster = labels[i]
-        read_img_path = os.path.join(opt.readpath, filepath.replace('.npy', '.jpg'))
-        save_img_path = os.path.join(opt.savepath, str(label_cluster))
-        check_path(opt.savepath)
-        copyfile(read_img_path, save_img_path)
+        read_img_path = os.path.join(opt.readpath, filepath.split('\\')[-1].replace('.npy', '.jpg'))
+        if os.path.exists(read_img_path):
+            save_folder_path = os.path.join(opt.save_allocation_path, str(label_cluster))
+            check_path(save_folder_path)
+            save_img_path = os.path.join(save_folder_path, filepath.split('\\')[-1].replace('.npy', '.jpg'))
+            copyfile(read_img_path, save_img_path)

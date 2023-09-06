@@ -100,10 +100,10 @@ if __name__ == "__main__":
     # save the results
     check_path(opt.savepath)
     filelist_savepath = os.path.join(opt.savepath, 'filelist.txt')
-    if os.path.exists(filelist_savepath):
+    if not os.path.exists(filelist_savepath):
         text_save(filelist, filelist_savepath)
     fileclasslist_savepath = os.path.join(opt.savepath, 'fileclasslist.txt')
-    if os.path.exists(fileclasslist_savepath):
+    if not os.path.exists(fileclasslist_savepath):
         text_save(fileclasslist, fileclasslist_savepath)
     
     centers_savepath = os.path.join(opt.savepath, 'centers_K%d.npy' % opt.K)
