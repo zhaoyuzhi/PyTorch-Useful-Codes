@@ -36,16 +36,18 @@ if __name__ == "__main__":
 
     for i in range(len(k)):
         for content in report:
-            k_value_str = 'K value: %d' % k[i]
+            k_value_str = 'K value: %d ' % k[i]
             if k_value_str in content:
                 if sum_of_distance_template in content:
-                    temp = float(content.split(sum_of_distance_template)[1].split('|').strip())
+                    temp = float(content.split(sum_of_distance_template)[1].split('|')[0].strip())
                     sum_of_distance_list.append(temp)
                 if top1_accuracy_template in content:
                     temp = float(content.split(top1_accuracy_template)[1].strip())
                     top1_accuracy_list.append(temp)
 
     # plot
-    plt.plot(k, sum_of_distance_list)
+    plt.plot(k, sum_of_distance_list, 'o-')
+    plt.show()
+    plt.plot(k, top1_accuracy_list, 'o-')
     plt.show()
     
