@@ -4,10 +4,6 @@
 
 - PyTorch operations
 
-- WarpError (based on PWC-Net codes)
-
-- simple metrics (PSNR SSIM MSE NRMSE)
-
 ## Python
 
 - Network requests

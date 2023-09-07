@@ -46,6 +46,7 @@ if __name__ == "__main__":
     # sort each row of mapping_book and return the index (统计每个聚类中心的数据类别分布)
     def statistic_mapping_book_class_distribution(mapping_book):
         mapping_book_argsort = np.argsort(mapping_book, axis = 1) # (from left to right: smallest to biggest)
+        #print(mapping_book_argsort[0])  # 第一个聚类中心的数据类别分布, mapping_book_argsort[0][-1]表示这个类落入此聚类中心最多数据对应的类别
         return mapping_book_argsort
     
     # accuracy (聚类准确度)
@@ -53,7 +54,7 @@ if __name__ == "__main__":
         mapping_book_sum = np.sum(mapping_book, axis = 1) # 落入某个聚类中心的数据个数
         mapping_book_max = np.max(mapping_book, axis = 1) # 落入某个聚类中心的数据里，Top1类的数据个数
         mapping_book_top1_acc = mapping_book_max / mapping_book_sum # 对于某个聚类中心，Top1类数据占此聚类所有数据的比例
-        print('In all clustering centers, the lowest accuracy is %.2f and the highest accuracy is %.2f' % (np.min(mapping_book_top1_acc), np.max(mapping_book_top1_acc)))
+        #print('In all clustering centers, the lowest accuracy is %.2f and the highest accuracy is %.2f' % (np.min(mapping_book_top1_acc), np.max(mapping_book_top1_acc)))
         mapping_book_weight = mapping_book_sum / np.sum(mapping_book_sum) # 落入某个聚类中心的数据个数占所有数据的比例
         mapping_book_weighted_top1_acc = mapping_book_weight * mapping_book_top1_acc
         return np.sum(mapping_book_weighted_top1_acc)
@@ -61,11 +62,13 @@ if __name__ == "__main__":
     # Top-1 coverage rate (类别覆盖率，认为每个聚类中心代表，落入此聚类中心最多数据对应的类别)
     def statistic_top1_converage_rate(mapping_book):
         mapping_book_argmax = np.argmax(mapping_book, axis = 1)
-        print(mapping_book_argmax[0])  # 对于第一个聚类中心，落入此聚类中心最多数据对应的类别
+        #print(mapping_book_argmax[0])  # 对于第一个聚类中心，落入此聚类中心最多数据对应的类别
         mapping_book_argmax = list(mapping_book_argmax)
+        not_covered_list = []
         for j in range(opt.gt_num_of_classes):
             if j not in mapping_book_argmax:
-                print('%d-th class is not included in this clustering.' % j)
+                not_covered_list.append(j)
+        return not_covered_list
 
     parser = argparse.ArgumentParser()
     parser.add_argument('--savepath', type = str, default = 'files', help = 'savepath')
@@ -98,11 +101,11 @@ if __name__ == "__main__":
 
     # sort each row of mapping_book and return the index (统计每个聚类中心的数据类别分布)
     mapping_book_argsort = statistic_mapping_book_class_distribution(mapping_book)
-    print(mapping_book_argsort[0])  # 第一个聚类中心的数据类别分布, mapping_book_argsort[0][-1]表示这个类落入此聚类中心最多数据对应的类别
 
     # accuracy (聚类准确度)
     top1_accuracy = statistic_top1_accuracy(mapping_book)
-    print(top1_accuracy)
+    print('KMeans | K value: %d | Top 1 accuracy: %.2f' % (opt.K, top1_accuracy))
     
     # Top-1 coverage rate (类别覆盖率，认为每个聚类中心代表，落入此聚类中心最多数据对应的类别)
-    statistic_top1_converage_rate(mapping_book)
+    not_convered_list = statistic_top1_converage_rate(mapping_book)
+    print('The following classes are not included in this clustering:', not_convered_list)
