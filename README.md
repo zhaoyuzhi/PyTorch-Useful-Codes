@@ -4,6 +4,8 @@
 
 - PyTorch operations
 
+- WarpError (based on PWC-Net codes)
+
 - simple metrics (PSNR SSIM MSE NRMSE)
 
 ## Python
@@ -16,7 +18,11 @@
 
 - Video frame conversion
 
-- WarpError (based on PWC-Net codes)
+- os_ops.py
+
+- pdf2image.py
+
+- rawpy_image_read.py
 
 ## Some knowledges:
 

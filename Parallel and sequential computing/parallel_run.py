@@ -18,6 +18,7 @@ threads.append(threading.Thread(target = run3))
 print(threads)
 
 if __name__ == '__main__':
+    
     os.system('/usr/local/bin/frpc')
     for t in threads:
         t.setDaemon(True)
