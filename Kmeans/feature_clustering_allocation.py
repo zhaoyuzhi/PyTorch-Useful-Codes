@@ -46,12 +46,20 @@ if __name__ == "__main__":
 
     parser = argparse.ArgumentParser()
     parser.add_argument('--readpath', type = str, \
-        default = 'C:\\users\\features', \
+        default = 'C:\\users\\images', \
             help = 'readpath')
     parser.add_argument('--savepath', type = str, default = 'files', help = 'savepath')
     parser.add_argument('--save_allocation_path', type = str, default = 'allocation_results', help = 'save_allocation_path')
     parser.add_argument('--K', type = int, default = 1200, help = 'K value of Kmeans')
     opt = parser.parse_args()
+    
+    # build image filelist
+    imglist = get_files(opt.readpath)
+    imgdict = dict()
+    for i in range(len(imglist)):
+        key = imglist[i].split('\\')[-1].split('.')[0]
+        value = imglist[i]
+        imgdict[key] = value
 
     # build filelist, classlist, and clustering results
     filelist_savepath = os.path.join(opt.savepath, 'filelist.txt')
@@ -65,10 +73,11 @@ if __name__ == "__main__":
     labels = text_readlines(labels_savepath)
 
     # allocation
-    for i in range(len(filelist)):
-        filepath = filelist[i]
-        label_cluster = labels[i]
-        read_img_path = os.path.join(opt.readpath, filepath.split('\\')[-1].replace('.npy', '.jpg'))
+    for j in range(len(filelist)):
+        filepath = filelist[j]
+        label_cluster = labels[j]
+        filepath_key = filepath.split('\\')[-1].split('.')[0]
+        read_img_path = imgdict[filepath_key]
         if os.path.exists(read_img_path):
             save_folder_path = os.path.join(opt.save_allocation_path, str(label_cluster))
             check_path(save_folder_path)

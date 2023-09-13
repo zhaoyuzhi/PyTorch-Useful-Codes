@@ -7,5 +7,5 @@ if __name__ == '__main__':
     print(k)
 
     for i in range(len(k)):
-        cmd = 'python feature_clustering.py --K %d' % k[i]
+        cmd = 'python feature_clustering.py --savepath %s --K %d' % ('files', k[i])
         os.system(cmd)
