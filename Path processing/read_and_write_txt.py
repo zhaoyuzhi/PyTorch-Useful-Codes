@@ -1,5 +1,8 @@
 import os
 
+# Use the following command if there is Chinese
+# file = open(filename, mode, encoding='utf-8')
+
 # save a list to a txt
 def text_save(content, filename, mode = 'a'):
     # try to save a list variable in txt file.
