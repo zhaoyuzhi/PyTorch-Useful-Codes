@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import os
 
 # Use the following command if there is Chinese
