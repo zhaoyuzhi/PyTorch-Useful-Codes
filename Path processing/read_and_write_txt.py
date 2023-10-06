@@ -2,7 +2,9 @@
 import os
 
 # Use the following command if there is Chinese
+# file = open(filename, 'r', encoding='utf-8')
 # file = open(filename, mode, encoding='utf-8')
+# file = open(filename, mode, encoding='ascii')
 
 # save a list to a txt
 def text_save(content, filename, mode = 'a'):
@@ -13,10 +15,10 @@ def text_save(content, filename, mode = 'a'):
     file.close()
 
 # read a txt expect EOF
-def text_readlines(filename):
+def text_readlines(filename, mode = 'r'):
     # try to read a txt file and return a list.Return [] if there was a mistake.
     try:
-        file = open(filename, 'r')
+        file = open(filename, mode)
     except IOError:
         error = []
         return error
