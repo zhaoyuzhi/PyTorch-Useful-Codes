@@ -3,7 +3,8 @@ import argparse
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
-from sklearn import manifold
+from sklearn.decomposition import PCA
+import joblib
 
 # read all the paths of generated features
 def get_files(path):
@@ -77,7 +78,7 @@ if __name__ == '__main__':
         default = 'C:\\users\\features', \
             help = 'filepath')
     parser.add_argument('--savepath', type = str, default = 'files', help = 'savepath')
-    parser.add_argument('--target_components', type = int, default = 2, help = 'target number of components after TSNE')
+    parser.add_argument('--target_components', type = int, default = 40, help = 'target number of components after PCA')
     opt = parser.parse_args()
     
     # build filelist, classlist, and featurelist
@@ -86,11 +87,12 @@ if __name__ == '__main__':
     print('There are %d files used for computing clustering.' % len(filelist))
     print('The shape of all features is:', filefeaturelist.shape)
 
-    # TSNE visualization
-    tsne = manifold.TSNE(n_components = opt.target_components, init = 'pca', random_state = 501)
-    feature_tsne = tsne.fit_transform(filefeaturelist)
-    print('The reduced dimension of all data is:', feature_tsne.shape)
-    
+    # PCA reduce dims
+    pca = PCA(n_components = opt.target_components)
+    feature_pca = pca.fit_transform(filefeaturelist)
+    print('The reduced dimension of all data is:', feature_pca.shape)
+
     # save files
-    np.save('tsne_components%d.npy' % opt.target_components, feature_tsne)
+    np.save('pca_components%d.npy' % opt.target_components, feature_pca)
+    joblib.dump(pca, 'pca_components%d.m' % opt.target_components)
     

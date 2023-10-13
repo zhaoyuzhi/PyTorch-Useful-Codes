@@ -1,8 +1,11 @@
 import os
-from shutil import copyfile
+from shutil import copyfile, move
 
 # 复制文件: 将文件path1复制到path2
 copyfile(path1, path2)
+
+# 剪切文件: 将文件path1移动到path2
+move(path1, path2)
 
 # 重命名文件: 将文件path1重命名为path2
 os.renames(path1, path2)
