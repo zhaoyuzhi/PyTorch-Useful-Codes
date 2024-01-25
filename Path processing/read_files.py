@@ -30,6 +30,16 @@ def get_filespaths(path):
             ret.append(filespath)
     return ret
 
+# read a folder, return all the sub-folders
+def get_subfolders(path):
+    ret = []
+    for root, dirs, files in os.walk(path):
+        for filespath in files:
+            subfolder = os.path.join(root, filespath).split('\\')[-2]
+            if subfolder not in ret:
+                ret.append(subfolder)
+    return ret
+
 # read a folder, return the image name, ended with jpg
 def get_jpgs(path):
     ret = []
