@@ -5,7 +5,7 @@ import os
 def text_save(content, filename, mode = 'a'):
     # try to save a list variable in txt file.
     # Use the following command if Chinese characters are written (i.e., text in the file will be encoded in utf-8)
-    # file = open(filename, mode, encoding='utf-8')
+    # file = open(filename, mode, encoding = 'utf-8')
     file = open(filename, mode)
     for i in range(len(content)):
         file.write(str(content[i]) + '\n')
@@ -16,7 +16,7 @@ def text_readlines(filename, mode = 'r'):
     # try to read a txt file and return a list.Return [] if there was a mistake.
     try:
         # Use the following command if there is Chinese characters are read
-        # file = open(filename, mode, encoding='utf-8')
+        # file = open(filename, mode, encoding = 'utf-8')
         file = open(filename, mode)
     except IOError:
         error = []
