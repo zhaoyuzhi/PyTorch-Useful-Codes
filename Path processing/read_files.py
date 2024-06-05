@@ -6,7 +6,7 @@ import os
 # dirs 表示该文件夹下的子目录名list
 # files 表示该文件夹下的文件list
 
-# read a folder, return the complete path of all files
+# read a folder, return all absolute paths
 def get_files(path):
     ret = []
     for root, dirs, files in os.walk(path):
@@ -14,7 +14,7 @@ def get_files(path):
             ret.append(os.path.join(root, filespath))
     return ret
 
-# read a folder, return all the sub-folders
+# read a folder, return all sub-folders
 def get_dirs(path):
     ret = []
     for root, dirs, files in os.walk(path):
@@ -22,7 +22,7 @@ def get_dirs(path):
             ret.append(os.path.join(root, dirspath))
     return ret
 
-# read a folder, return all the file names
+# read a folder, return all file names
 def get_filespaths(path):
     ret = []
     for root, dirs, files in os.walk(path):
@@ -30,7 +30,7 @@ def get_filespaths(path):
             ret.append(filespath)
     return ret
 
-# read a folder, return all the sub-folders
+# read a folder, return all sub-folders
 def get_subfolders(path):
     ret = []
     for root, dirs, files in os.walk(path):
@@ -39,6 +39,34 @@ def get_subfolders(path):
             if subfolder not in ret:
                 ret.append(subfolder)
     return ret
+
+# read a folder, return all dir names and file names
+# os.path.split 将路径 path 拆分为一对，即 (head, tail)，其中，tail 是路径的最后一部分，而 head 里是除最后部分外的所有内容
+# os.path.split('/home/ubuntu/python/example.py') ---> ('/home/ubuntu/python', 'example.py')
+def get_files_split(path):
+    ret_head = []
+    ret_tail = []
+    for root, dirs, files in os.walk(path):
+        for filespath in files:
+            (head, tail) = os.path.split(os.path.join(root, filespath))
+            ret_head.append(head)
+            ret_tail.append(tail)
+    return ret_head, ret_tail
+
+# read a folder, return all dir names and file names
+# os.path.splitext 将路径名称 path 拆分为 (root, ext) 对使得 root + ext == path，并且扩展名 ext 为空或以句点打头并最多只包含一个句点
+# os.path.splitext('/home/ubuntu/python/example.py') ---> ('/home/ubuntu/python/example', '.py')
+def get_files_splitext(path):
+    ret_root = []
+    ret_ext = []
+    for root, dirs, files in os.walk(path):
+        for filespath in files:
+            (root, ext) = os.path.splitext(os.path.join(root, filespath))
+            ret_root.append(root)
+            ret_ext.append(ext)
+    return ret_root, ret_ext
+
+# ---------------------------------------------------------------------
 
 # read a folder, return the image name, ended with jpg
 def get_jpgs(path):
@@ -87,8 +115,8 @@ def get_raws(path):
 
 if __name__ == '__main__':
 
-    fullname = get_files("/home/zhaoyuzhi/dataset/ILSVRC2012/train_224")
-    print("fullname saved")
-    jpgname = get_jpgs("C:\\Users\\ZHAO Yuzhi\\Desktop\\dataset\\MITPlace_train256")
-    print("jpgname saved")
+    file_list = get_dirs("C:\\Users\\yzzha\\Desktop\\PyTorch-Useful-Codes")
+
+    for i, file_name in enumerate(file_list):
+        print(i, file_name)
     

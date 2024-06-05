@@ -13,10 +13,11 @@ def get_files(path):
 if __name__ == '__main__':
 
     fullname = get_files("./train")
+    
     for i, file_name in enumerate(fullname):
         try:
             image = Image.open(file_name).convert('RGB')
             image = cv2.imread(file_name)
         except:
-            print('load errors:', file_name)
+            print('load error:', file_name)
     
