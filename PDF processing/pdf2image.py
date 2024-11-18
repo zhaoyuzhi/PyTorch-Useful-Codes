@@ -3,22 +3,30 @@ import os
 import tempfile
 from pdf2image import convert_from_path, convert_from_bytes
 
-def extract(filename, outputDir):
+'''
+with tempfile.TemporaryDirectory() as path:
+    images_from_path = convert_from_path('/home/belval/example.pdf', output_folder=path)
+'''
+
+def pdf2image_func(filename, output_dir):
+    # create the folder
+    check_path(output_dir)
+    # get the name of the input file
+    input_file_name = filename.split(os.sep)[-1].split('.')[0]
+    # convert the pdf to image
     with tempfile.TemporaryDirectory() as path:
-        images = convert_from_path(filename, output_folder = path)
-        for index, img in enumerate(images):
-            # create the folder
-            midname = filename.split('\\')[-1][:-4]
-            folderpath = os.path.join(outputDir, midname)
-            if os.path.exists(folderpath):
-                print("Re-arrange the folder")
-                raise SystemExit
-            else:
-                os.mkdir(folderpath)
-            # save the image
-            imgname = str(index) + '.jpg'
-            imgpath = os.path.join(folderpath, imgname)
+        # extract images from multi-page pdf
+        images_from_path = convert_from_path(filename, output_folder = path)
+        # save the image
+        for index, img in enumerate(images_from_path):
+            imgname = input_file_name + '_' + str(index + 1) + '.jpg'
+            imgpath = os.path.join(output_dir, imgname)
             img.save(imgpath)
+
+# multi-layer folder creation
+def check_path(path):
+    if not os.path.exists(path):
+        os.makedirs(path)
 
 def get_pdf_files(path):
     # read a folder, return the complete path
@@ -39,10 +47,12 @@ if __name__ == "__main__":
     parser.add_argument('--outpath', type = str, default = './', help = 'outpath')
     opt = parser.parse_args()
 
+    '''
     filelist = get_pdf_files(opt.inpath)
     for index, pdf in enumerate(filelist):
         print('Now processing %d-th pdf file' % (index))
-        extract(pdf, opt.outpath)
+        pdf2image_func(pdf, opt.outpath)
+    '''
     
-    # extract(opt.filename, opt.outputDir)          # single pdf file
+    # pdf2image_func(opt.filename, opt.outputDir)          # single pdf file
     
