@@ -10,6 +10,9 @@ move(path1, path2)
 # 重命名文件: 将文件path1重命名为path2
 os.renames(path1, path2)
 
+# 重命名文件夹: 将文件夹path1重命名为path2
+os.rename(path1, path2)
+
 # 删除文件: 删除文件path1 (不能删除目录)
 os.remove(path1)
 
